@@ -1,4 +1,7 @@
+using ToDoList.Infrastructure;
 using Serilog;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -13,6 +16,16 @@ try
       .ReadFrom.Services(services)
       .Enrich.FromLogContext()
       .WriteTo.Console());
+
+  SqlConnectionStringBuilder sqlConnectionStringBuilder = new(
+      builder.Configuration.GetConnectionString("TodoDbContext"))
+  {
+    Password = builder.Configuration["TodoContext:Password"]
+  };
+
+  builder.Services.AddDbContext<TodoDbContext>(options =>
+      options.UseSqlServer(sqlConnectionStringBuilder.ConnectionString));
+
   builder.Services.AddOpenApi();
 
   var app = builder.Build();
