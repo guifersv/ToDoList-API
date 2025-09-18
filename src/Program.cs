@@ -9,6 +9,7 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
+  Log.Information("App started");
   var builder = WebApplication.CreateBuilder(args);
 
   builder.Services.AddSerilog((services, ls) => ls
