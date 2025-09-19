@@ -1,6 +1,7 @@
-using ToDoList.Infrastructure;
 using ToDoList.Services.Interfaces;
 using ToDoList.Domain;
+
+namespace ToDoList.Infrastructure;
 
 public class TodoRepository(TodoDbContext context) : ITodoRepository
 {
