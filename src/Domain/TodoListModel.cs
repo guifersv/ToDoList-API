@@ -6,7 +6,7 @@ public class TodoListModel
 {
   public int Id { get; set; }
   [Required]
-  [StringLength(100)]
+  [StringLength(20, MinimumLength = 1)]
   public required string Title { get; set; }
   [StringLength(100)]
   public string? Description { get; set; }
