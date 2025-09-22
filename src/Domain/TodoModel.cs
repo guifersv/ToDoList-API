@@ -5,7 +5,6 @@ namespace ToDoList.Domain;
 public class TodoModel
 {
   public int Id { get; set; }
-  [Required]
   [StringLength(20, MinimumLength = 1)]
   public required string Title { get; init; }
   [StringLength(100)]
