@@ -1,5 +1,6 @@
 using ToDoList.Services.Interfaces;
 using ToDoList.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace ToDoList.Infrastructure;
 
@@ -9,26 +10,29 @@ public class TodoRepository(TodoDbContext context) : ITodoRepository
 
   public async Task CreateTodoListAsync(TodoListModel todoListModel)
   {
-    throw new NotImplementedException();
+    await _context.TodoLists.AddAsync(todoListModel);
+    await _context.SaveChangesAsync();
   }
 
   public async Task<IEnumerable<TodoListModel>> GetAllTodoListsAsync()
   {
-    throw new NotImplementedException();
+    return await _context.TodoLists.AsNoTracking().ToListAsync();
   }
 
-  public async Task<TodoListModel> GetTodoListByIdAsync(int id)
+  public async Task<TodoListModel?> GetTodoListByIdAsync(int id)
   {
-    throw new NotImplementedException();
+    return await _context.TodoLists.FindAsync(id);
   }
 
   public async Task UpdateTodoListAsync(TodoListModel todoListModel)
   {
-    throw new NotImplementedException();
+    _context.TodoLists.Update(todoListModel);
+    await _context.SaveChangesAsync();
   }
 
   public async Task DeleteTodoListAsync(TodoListModel todoListModel)
   {
-    throw new NotImplementedException();
+    _context.TodoLists.Remove(todoListModel);
+    await _context.SaveChangesAsync();
   }
 }
