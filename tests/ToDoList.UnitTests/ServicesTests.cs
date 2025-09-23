@@ -140,8 +140,60 @@ public class ServicesTests
   }
 
   [Fact]
-  public void Delete_()
+  public async Task DeleteTodoListAsync_DeleteModel_WhenItExistsInDatabase()
   {
-    Assert.True(true);
+    TodoListModel model = new() { Id = 1, Title = "string" };
+    List<TodoListModel> models = [model];
+
+    var logger = Mock.Of<ILogger<TodoService>>();
+
+    var repositoryMock = new Mock<ITodoRepository>();
+    repositoryMock
+      .Setup(r => r.GetTodoListByIdAsync(
+            It.Is<int>(id => id == model.Id)).Result)
+      .Returns(model)
+      .Verifiable(Times.Once());
+    repositoryMock
+      .Setup(r => r.DeleteTodoListAsync(
+            It.Is<TodoListModel>(
+              s => s.Id == model.Id && s.Title == model.Title)))
+      .Returns(Task.CompletedTask)
+      .Callback<TodoListModel>(upd => models.Remove(upd))
+      .Verifiable(Times.Once());
+
+    var service = new TodoService(repositoryMock.Object, logger);
+    await service.DeleteTodoListAsync(model);
+
+    Assert.Empty(models);
+    repositoryMock.Verify();
+  }
+
+  [Fact]
+  public async Task DeleteTodoListAsync_ShouldNotDeleteModel_WhenItDoesNotExistInDatabase()
+  {
+    TodoListModel model = new() { Id = 1, Title = "string" };
+    List<TodoListModel> models = [model];
+
+    var logger = Mock.Of<ILogger<TodoService>>();
+
+    var repositoryMock = new Mock<ITodoRepository>();
+    repositoryMock
+      .Setup(r => r.GetTodoListByIdAsync(
+            It.Is<int>(id => id == model.Id)).Result)
+      .Returns((TodoListModel?)null)
+      .Verifiable(Times.Once());
+    repositoryMock
+      .Setup(r => r.DeleteTodoListAsync(
+            It.Is<TodoListModel>(
+              s => s.Id == model.Id && s.Title == model.Title)))
+      .Returns(Task.CompletedTask)
+      .Callback<TodoListModel>(upd => models.Remove(upd))
+      .Verifiable(Times.Never());
+
+    var service = new TodoService(repositoryMock.Object, logger);
+    await service.DeleteTodoListAsync(model);
+
+    Assert.NotEmpty(models);
+    repositoryMock.Verify();
   }
 }
