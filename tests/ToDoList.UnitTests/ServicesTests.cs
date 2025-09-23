@@ -95,7 +95,7 @@ public class ServicesTests
     var repositoryMock = new Mock<ITodoRepository>();
     repositoryMock
       .Setup(r => r.GetTodoListByIdAsync(
-            It.Is<int>(id => id == model.Id)).Result)
+            It.Is<int>(id => id == updatedModel.Id)).Result)
       .Returns(model)
       .Verifiable(Times.Once());
     repositoryMock
@@ -116,7 +116,27 @@ public class ServicesTests
   [Fact]
   public async Task UpdateTodoListAsync_ShouldNotUpdateModel_WhenItDoesNotExistInDatabase()
   {
-    Assert.True(true);
+    TodoListModel model = new() { Id = 1, Title = "string" };
+    TodoListModel updatedModel = new() { Id = 1, Title = "new" };
+
+    var logger = Mock.Of<ILogger<TodoService>>();
+
+    var repositoryMock = new Mock<ITodoRepository>();
+    repositoryMock
+      .Setup(r => r.GetTodoListByIdAsync(
+            It.Is<int>(id => id == updatedModel.Id)).Result)
+      .Returns((TodoListModel?)null)
+      .Verifiable(Times.Once());
+    repositoryMock
+      .Setup(r => r.UpdateTodoListAsync(
+            It.IsAny<TodoListModel>()))
+      .Returns(Task.CompletedTask)
+      .Verifiable(Times.Never());
+
+    var service = new TodoService(repositoryMock.Object, logger);
+    await service.UpdateTodoListAsync(updatedModel);
+
+    repositoryMock.Verify();
   }
 
   [Fact]
