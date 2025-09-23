@@ -3,7 +3,7 @@ namespace ToDoList.UnitTests;
 public class ServicesTests
 {
   [Fact]
-  public async Task CreateAsync_ShouldCallRepositoryOnce()
+  public async Task CreateTodoListAsync_ShouldCallRepositoryOnce()
   {
     var todoList = new TodoListModel
     {
@@ -26,7 +26,7 @@ public class ServicesTests
   }
 
   [Fact]
-  public async Task GetAllAsync_ShouldReturnSameOfRepository_ShoulCallOnce()
+  public async Task GetAllTodoListsAsync_ShouldReturnSameOfRepository_ShoulCallOnce()
   {
     List<TodoListModel> models = [new TodoListModel { Title = "string" }];
 
@@ -47,7 +47,7 @@ public class ServicesTests
   }
 
   [Fact]
-  public async Task GetTodoAsync_ShouldReturnModel_IfItExistsInDB()
+  public async Task GetTodoListByIdAsync_ShouldReturnModel_IfItExistsInDB()
   {
     TodoListModel model = new() { Id = 1, Title = "string" };
 
@@ -69,7 +69,7 @@ public class ServicesTests
   }
 
   [Fact]
-  public async Task GetTodoAsync_ShouldReturnNull_IfItDoesNotExistInDB()
+  public async Task GetTodoListByIdAsync_ShouldReturnNull_IfItDoesNotExistInDB()
   {
     var logger = Mock.Of<ILogger<TodoService>>();
 
