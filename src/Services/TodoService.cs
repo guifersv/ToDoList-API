@@ -23,7 +23,10 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
   public async Task<TodoListModel?> GetTodoListByIdAsync(int id)
   {
     _logger.LogInformation("TodoService: Retrieving todo list by id");
-    return await _repository.GetTodoListByIdAsync(id);
+    var result = await _repository.GetTodoListByIdAsync(id);
+    if (result is null)
+      _logger.LogWarning("TodoService: The model doesn't exist");
+    return result;
   }
 
   public async Task UpdateTodoListAsync(TodoListModel todoListModel)
