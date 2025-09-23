@@ -26,9 +26,24 @@ public class ServicesTests
   }
 
   [Fact]
-  public void GetAll_()
+  public async Task GetAllAsync_ShouldReturnSameOfRepository_ShoulCallOnce()
   {
-    Assert.True(true);
+    List<TodoListModel> models = [new TodoListModel { Title = "string" }];
+
+    var logger = Mock.Of<ILogger<TodoService>>();
+
+    var repositoryMock = new Mock<ITodoRepository>();
+    repositoryMock
+      .Setup(r => r.GetAllTodoListsAsync().Result)
+      .Returns(models)
+      .Verifiable(Times.Once());
+
+    var service = new TodoService(repositoryMock.Object, logger);
+    var result = await service.GetAllTodoListsAsync();
+
+    Assert.IsType<List<TodoListModel>>(result);
+    Assert.Equal(models, result);
+    repositoryMock.Verify();
   }
 
   [Fact]
