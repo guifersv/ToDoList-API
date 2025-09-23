@@ -5,22 +5,19 @@ public class ServicesTests
   [Fact]
   public async Task CreateTodoListAsync_ShouldCallRepositoryOnce()
   {
-    var todoList = new TodoListModel
-    {
-      Title = "string",
-    };
+    TodoListModel model = new() { Title = "string" };
 
     var logger = Mock.Of<ILogger<TodoService>>();
 
     var repositoryMock = new Mock<ITodoRepository>();
     repositoryMock
       .Setup(r => r.CreateTodoListAsync(
-          It.IsAny<TodoListModel>()))
+          It.Is<TodoListModel>(m => m.Title == model.Title)))
       .Returns(Task.CompletedTask)
       .Verifiable(Times.Once());
 
     var service = new TodoService(repositoryMock.Object, logger);
-    await service.CreateTodoListAsync(todoList);
+    await service.CreateTodoListAsync(model);
 
     repositoryMock.Verify();
   }
@@ -90,20 +87,21 @@ public class ServicesTests
   [Fact]
   public async Task UpdateTodoListAsync_ShouldUpdateModel_WhenItExistsInDatabase()
   {
-    TodoListModel model = new() { Title = "string" };
-    TodoListModel updatedModel = new() { Title = "new" };
+    TodoListModel model = new() { Id = 1, Title = "string" };
+    TodoListModel updatedModel = new() { Id = 1, Title = "new" };
 
     var logger = Mock.Of<ILogger<TodoService>>();
 
     var repositoryMock = new Mock<ITodoRepository>();
     repositoryMock
       .Setup(r => r.GetTodoListByIdAsync(
-            It.IsAny<int>()).Result)
+            It.Is<int>(id => id == model.Id)).Result)
       .Returns(model)
       .Verifiable(Times.Once());
     repositoryMock
       .Setup(r => r.UpdateTodoListAsync(
-            It.Is<TodoListModel>(s => s.Title == updatedModel.Title)))
+            It.Is<TodoListModel>(
+              s => s.Id == updatedModel.Id && s.Title == updatedModel.Title)))
       .Returns(Task.CompletedTask)
       .Callback<TodoListModel>(upd => model = upd)
       .Verifiable(Times.Once());
