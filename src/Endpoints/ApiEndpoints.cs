@@ -24,6 +24,7 @@ public static class ApiEndpoints
       return TypedResults.Ok(model);
   }
 
+  [EndpointSummary("Get All Todo Lists")]
   public static async Task<IEnumerable<TodoListModel>> GetAllTodoLists(ITodoService service)
   {
     return await service.GetAllTodoListsAsync();
