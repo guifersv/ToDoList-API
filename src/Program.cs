@@ -1,7 +1,10 @@
-using ToDoList.Infrastructure;
 using Serilog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
+using ToDoList.Infrastructure;
+using ToDoList.Endpoints;
+using ToDoList.Services.Interfaces;
+using ToDoList.Services;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -11,6 +14,9 @@ try
 {
   Log.Information("App started");
   var builder = WebApplication.CreateBuilder(args);
+
+  builder.Services.AddScoped<ITodoService, TodoService>();
+  builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 
   builder.Services.AddSerilog((services, ls) => ls
       .ReadFrom.Configuration(builder.Configuration)
@@ -42,6 +48,9 @@ try
   }
 
   app.UseHttpsRedirection();
+
+  app.MapGroup("")
+    .RouteApi();
 
   app.Run();
 }
