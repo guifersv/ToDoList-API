@@ -36,4 +36,21 @@ public class EndpointTests
     Assert.IsType<NotFound>(result.Result);
     serviceMock.Verify();
   }
+
+  [Fact]
+  public async Task GetAllTodoLists_ShoudCallReturnEnumarable_ShouldCallService()
+  {
+    IEnumerable<TodoListModel> models = [];
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.GetAllTodoListsAsync().Result)
+      .Returns(models)
+      .Verifiable(Times.Once());
+
+    var result = await
+      ApiEndpoints.GetAllTodoLists(serviceMock.Object);
+
+    Assert.Equal(result, models);
+    serviceMock.Verify();
+  }
 }

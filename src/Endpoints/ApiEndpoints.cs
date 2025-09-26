@@ -22,4 +22,10 @@ public static class ApiEndpoints
     else
       return TypedResults.Ok(model);
   }
+
+  public static async Task<IEnumerable<TodoListModel>> GetAllTodoLists(ITodoService service)
+  {
+    return await service.GetAllTodoListsAsync();
+  }
+
 }
