@@ -53,4 +53,22 @@ public class EndpointTests
     Assert.Equal(result, models);
     serviceMock.Verify();
   }
+
+  [Fact]
+  public async Task CreateTodoList_ShouldReturnCreatedAtRoute_ShouldCallService()
+  {
+    TodoListModel model = new() { Title = "string" };
+
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.CreateTodoListAsync(It.Is<TodoListModel>(m => m.Title == model.Title)))
+      .Returns(Task.CompletedTask)
+      .Verifiable(Times.Once());
+
+    var result = await
+      ApiEndpoints.CreateTodoList(model, serviceMock.Object);
+
+    Assert.IsType<CreatedAtRoute>(result);
+    serviceMock.Verify();
+  }
 }
