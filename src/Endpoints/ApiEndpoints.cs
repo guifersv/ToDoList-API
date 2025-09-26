@@ -9,6 +9,7 @@ public static class ApiEndpoints
   public static RouteGroupBuilder RouteApi(this RouteGroupBuilder group)
   {
     group.MapGet("/{id}", GetTodoList);
+    group.MapGet("/", GetAllTodoLists);
     return group;
   }
 
