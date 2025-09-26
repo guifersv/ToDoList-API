@@ -10,6 +10,7 @@ public static class ApiEndpoints
   {
     group.MapGet("/{id}", GetTodoList);
     group.MapGet("/", GetAllTodoLists);
+    group.MapPost("/", CreateTodoList).WithName("CreateTodoList");
     return group;
   }
 
@@ -30,4 +31,12 @@ public static class ApiEndpoints
     return await service.GetAllTodoListsAsync();
   }
 
+  [EndpointSummary("Create Todo List")]
+  public static async Task<CreatedAtRoute> CreateTodoList(TodoListModel model, ITodoService service)
+  {
+    await service.CreateTodoListAsync(model);
+    var createdModel = await service.GetTodoListByIdAsync(model.Id);
+
+    return TypedResults.CreatedAtRoute("CreateTodoList", createdModel);
+  }
 }
