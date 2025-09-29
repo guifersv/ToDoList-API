@@ -11,6 +11,7 @@ public static class ApiEndpoints
     group.MapGet("/{id}", GetTodoList);
     group.MapGet("/", GetAllTodoLists);
     group.MapPost("/", CreateTodoList).WithName(nameof(CreateTodoList));
+    group.MapDelete("/{id}", DeleteTodoList);
     return group;
   }
 
@@ -43,5 +44,19 @@ public static class ApiEndpoints
     var createdModel = await service.GetTodoListByIdAsync(model.Id);
 
     return TypedResults.CreatedAtRoute(nameof(CreateTodoList), createdModel);
+  }
+
+  [EndpointSummary("Delete Todo List")]
+  public static async Task<Results<NotFound, NoContent>> DeleteTodoList(int id, ITodoService service)
+  {
+    var model = await service.GetTodoListByIdAsync(id);
+
+    if (model is null)
+      return TypedResults.NotFound();
+    else
+    {
+      await service.DeleteTodoListAsync(model);
+      return TypedResults.NoContent();
+    }
   }
 }
