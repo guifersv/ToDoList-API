@@ -10,7 +10,7 @@ public static class ApiEndpoints
   {
     group.MapGet("/{id}", GetTodoList);
     group.MapGet("/", GetAllTodoLists);
-    group.MapPost("/", CreateTodoList).WithName("CreateTodoList");
+    group.MapPost("/", CreateTodoList).WithName(nameof(CreateTodoList));
     return group;
   }
 
@@ -37,6 +37,6 @@ public static class ApiEndpoints
     await service.CreateTodoListAsync(model);
     var createdModel = await service.GetTodoListByIdAsync(model.Id);
 
-    return TypedResults.CreatedAtRoute("CreateTodoList", createdModel);
+    return TypedResults.CreatedAtRoute(nameof(CreateTodoList), createdModel);
   }
 }
