@@ -11,3 +11,11 @@ public class TodoListModel
   public string? Description { get; set; }
   public IEnumerable<TodoModel> Todos { get; set; } = new List<TodoModel>();
 }
+
+public record TodoListDto
+{
+  [StringLength(20)]
+  public required string Title { get; set; }
+  [StringLength(100)]
+  public string? Description { get; set; }
+}

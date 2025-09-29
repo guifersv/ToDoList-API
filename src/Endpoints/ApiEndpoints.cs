@@ -32,8 +32,13 @@ public static class ApiEndpoints
   }
 
   [EndpointSummary("Create Todo List")]
-  public static async Task<CreatedAtRoute> CreateTodoList(TodoListModel model, ITodoService service)
+  public static async Task<CreatedAtRoute> CreateTodoList(TodoListDto modelDto, ITodoService service)
   {
+    var model = new TodoListModel
+    {
+      Title = modelDto.Title,
+      Description = modelDto.Description
+    };
     await service.CreateTodoListAsync(model);
     var createdModel = await service.GetTodoListByIdAsync(model.Id);
 
