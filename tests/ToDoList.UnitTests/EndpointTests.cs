@@ -57,7 +57,7 @@ public class EndpointTests
   [Fact]
   public async Task CreateTodoList_ShouldReturnCreatedAtRoute_ShouldCallService()
   {
-    TodoListModel model = new() { Title = "string" };
+    TodoListDto model = new() { Title = "string" };
 
     var serviceMock = new Mock<ITodoService>();
     serviceMock
