@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ToDoList.UnitTests;
 
-public class EndpointTests
+public class HandlersTests
 {
   [Fact]
   public async Task GetTodoList_ShouldReturnOk_WhenModelExists()
