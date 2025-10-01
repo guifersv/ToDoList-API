@@ -41,10 +41,14 @@ try
   // Configure the HTTP request pipeline.
   if (app.Environment.IsDevelopment())
   {
-    app.UseExceptionHandler();
-    app.UseStatusCodePages();
     app.MapOpenApi();
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "v1"));
+    app.UseDeveloperExceptionPage();
+  }
+  else
+  {
+    app.UseExceptionHandler();
+    app.UseStatusCodePages();
   }
 
   app.UseHttpsRedirection();
