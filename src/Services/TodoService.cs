@@ -29,24 +29,41 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
     return result;
   }
 
-  public async Task UpdateTodoListAsync(TodoListModel todoListModel)
+  public async Task<TodoListModel?> UpdateTodoListAsync(TodoListModel todoListModel)
   {
     _logger.LogInformation("TodoService: Updating todo list");
+    var model = await _repository.GetTodoListByIdAsync(todoListModel.Id);
 
-    if (await _repository.GetTodoListByIdAsync(todoListModel.Id) is not null)
-      await _repository.UpdateTodoListAsync(todoListModel);
+    if (model is not null)
+    {
+      model.Title = todoListModel.Title;
+      model.Description = todoListModel.Description;
+      await _repository.UpdateTodoListAsync(model);
+      return model;
+    }
     else
+    {
       _logger.LogWarning("TodoService: To be able to update a model, it must exist in the database");
+      return null;
+    }
   }
 
-  public async Task DeleteTodoListAsync(TodoListModel todoListModel)
+  public async Task<TodoListModel?> DeleteTodoListAsync(int id)
   {
     _logger.LogInformation("TodoService: Updating todo list");
 
-    if (await _repository.GetTodoListByIdAsync(todoListModel.Id) is not null)
-      await _repository.DeleteTodoListAsync(todoListModel);
+    var model = await _repository.GetTodoListByIdAsync(id);
+
+    if (model is not null)
+    {
+      await _repository.DeleteTodoListAsync(model);
+      return model;
+    }
     else
+    {
       _logger.LogWarning("TodoService: To be able to delete a model, it must exist in the database");
+      return null;
+    }
   }
 }
 
