@@ -129,9 +129,10 @@ public class ServicesTests
       .Verifiable(Times.Once());
 
     var service = new TodoService(repositoryMock.Object, logger);
-    await service.UpdateTodoListAsync(updatedModel);
+    var returnedModel = await service.UpdateTodoListAsync(updatedModel);
 
     Assert.Equal(updatedModel, model);
+    Assert.Equal(updatedModel, returnedModel);
     repositoryMock.Verify();
   }
 
@@ -158,9 +159,10 @@ public class ServicesTests
       .Verifiable(Times.Never());
 
     var service = new TodoService(repositoryMock.Object, logger);
-    await service.UpdateTodoListAsync(updatedModel);
+    var returnedModel = await service.UpdateTodoListAsync(updatedModel);
 
     Assert.NotEqual(updatedModel, model);
+    Assert.Null(returnedModel);
     repositoryMock.Verify();
   }
 
@@ -187,9 +189,10 @@ public class ServicesTests
       .Verifiable(Times.Once());
 
     var service = new TodoService(repositoryMock.Object, logger);
-    await service.DeleteTodoListAsync(model);
+    var returnedModel = await service.DeleteTodoListAsync(model.Id);
 
     Assert.Empty(models);
+    Assert.Equal(model, returnedModel);
     repositoryMock.Verify();
   }
 
@@ -216,9 +219,10 @@ public class ServicesTests
       .Verifiable(Times.Never());
 
     var service = new TodoService(repositoryMock.Object, logger);
-    await service.DeleteTodoListAsync(model);
+    var returnedModel = await service.DeleteTodoListAsync(model.Id);
 
     Assert.NotEmpty(models);
+    Assert.Null(returnedModel);
     repositoryMock.Verify();
   }
 }
