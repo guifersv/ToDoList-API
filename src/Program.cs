@@ -54,7 +54,10 @@ try
   app.UseHttpsRedirection();
 
   app.MapGroup("")
-    .RouteApi();
+    .RouteTodoList();
+
+  app.MapGroup("/todo")
+    .RouteTodo();
 
   app.Run();
 }

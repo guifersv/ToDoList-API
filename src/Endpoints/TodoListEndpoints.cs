@@ -6,7 +6,7 @@ namespace ToDoList.Endpoints;
 
 public static class TodoListEndpoints
 {
-  public static RouteGroupBuilder RouteApi(this RouteGroupBuilder group)
+  public static RouteGroupBuilder RouteTodoList(this RouteGroupBuilder group)
   {
     group.MapGet("/{id}", GetTodoList);
     group.MapGet("/", GetAllTodoLists);
