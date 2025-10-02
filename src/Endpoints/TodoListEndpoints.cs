@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ToDoList.Endpoints;
 
-public static class ApiEndpoints
+public static class TodoListEndpoints
 {
   public static RouteGroupBuilder RouteApi(this RouteGroupBuilder group)
   {
@@ -13,6 +13,7 @@ public static class ApiEndpoints
     group.MapPost("/", CreateTodoList).WithName(nameof(CreateTodoList));
     group.MapDelete("/{id}", DeleteTodoList);
     group.MapPut("/{id}", EditTodoList);
+
     return group;
   }
 

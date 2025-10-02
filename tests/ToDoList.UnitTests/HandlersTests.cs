@@ -15,7 +15,7 @@ public class HandlersTests
       .Verifiable(Times.Once());
 
     var result = await
-      ApiEndpoints.GetTodoList(1, serviceMock.Object);
+      TodoListEndpoints.GetTodoList(1, serviceMock.Object);
 
     Assert.IsType<Ok<TodoListModel>>(result.Result);
     serviceMock.Verify();
@@ -31,7 +31,7 @@ public class HandlersTests
       .Verifiable(Times.Once());
 
     var result = await
-      ApiEndpoints.GetTodoList(1, serviceMock.Object);
+      TodoListEndpoints.GetTodoList(1, serviceMock.Object);
 
     Assert.IsType<NotFound>(result.Result);
     serviceMock.Verify();
@@ -48,7 +48,7 @@ public class HandlersTests
       .Verifiable(Times.Once());
 
     var result = await
-      ApiEndpoints.GetAllTodoLists(serviceMock.Object);
+      TodoListEndpoints.GetAllTodoLists(serviceMock.Object);
 
     Assert.Equal(result, models);
     serviceMock.Verify();
@@ -66,7 +66,7 @@ public class HandlersTests
       .Verifiable(Times.Once());
 
     var result = await
-      ApiEndpoints.CreateTodoList(model, serviceMock.Object);
+      TodoListEndpoints.CreateTodoList(model, serviceMock.Object);
 
     Assert.IsType<CreatedAtRoute>(result);
     serviceMock.Verify();
@@ -85,7 +85,7 @@ public class HandlersTests
       .Verifiable(Times.Once());
 
     var result =
-      await ApiEndpoints.DeleteTodoList(model.Id, serviceMock.Object);
+      await TodoListEndpoints.DeleteTodoList(model.Id, serviceMock.Object);
 
     Assert.IsType<NoContent>(result.Result);
     serviceMock.Verify();
@@ -104,7 +104,7 @@ public class HandlersTests
       .Verifiable(Times.Never());
 
     var result =
-      await ApiEndpoints.DeleteTodoList(1, serviceMock.Object);
+      await TodoListEndpoints.DeleteTodoList(1, serviceMock.Object);
 
     Assert.IsType<NotFound>(result.Result);
     serviceMock.Verify();
@@ -126,7 +126,7 @@ public class HandlersTests
       .Verifiable(Times.Once());
 
     var result =
-      await ApiEndpoints.EditTodoList(
+      await TodoListEndpoints.EditTodoList(
           updatedModel.Id, new TodoListDto { Title = updatedModel.Title, Description = updatedModel.Description }, serviceMock.Object);
 
     Assert.IsType<NoContent>(result.Result);
@@ -149,7 +149,7 @@ public class HandlersTests
       .Verifiable(Times.Once());
 
     var result =
-      await ApiEndpoints.EditTodoList(
+      await TodoListEndpoints.EditTodoList(
           updatedModel.Id, new TodoListDto { Title = updatedModel.Title, Description = updatedModel.Description }, serviceMock.Object);
 
     Assert.IsType<NotFound>(result.Result);
