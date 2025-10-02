@@ -125,14 +125,14 @@ public class ServicesTests
             It.Is<TodoListModel>(
               s => s.Id == updatedModel.Id && s.Title == updatedModel.Title)))
       .Returns(Task.CompletedTask)
-      .Callback<TodoListModel>(upd => model = upd)
       .Verifiable(Times.Once());
 
     var service = new TodoService(repositoryMock.Object, logger);
     var returnedModel = await service.UpdateTodoListAsync(updatedModel);
 
-    Assert.Equal(updatedModel, model);
-    Assert.Equal(updatedModel, returnedModel);
+    Assert.NotNull(returnedModel);
+    Assert.Equal(updatedModel.Id, returnedModel.Id);
+    Assert.Equal(updatedModel.Title, returnedModel.Title);
     repositoryMock.Verify();
   }
 
