@@ -61,7 +61,8 @@ public class HandlersTests
 
     var serviceMock = new Mock<ITodoService>();
     serviceMock
-      .Setup(s => s.CreateTodoListAsync(It.Is<TodoListModel>(m => m.Title == model.Title)))
+      .Setup(s => s.CreateTodoListAsync(
+            It.Is<TodoListModel>(m => m.Title == model.Title)))
       .Returns(Task.CompletedTask)
       .Verifiable(Times.Once());
 
@@ -126,8 +127,8 @@ public class HandlersTests
       .Verifiable(Times.Once());
 
     var result =
-      await TodoListEndpoints.EditTodoList(
-          updatedModel.Id, new TodoListDto { Title = updatedModel.Title, Description = updatedModel.Description }, serviceMock.Object);
+      await TodoListEndpoints.EditTodoList(updatedModel.Id, new TodoListDto
+      { Title = updatedModel.Title, Description = updatedModel.Description }, serviceMock.Object);
 
     Assert.IsType<NoContent>(result.Result);
     serviceMock.Verify();
@@ -150,7 +151,8 @@ public class HandlersTests
 
     var result =
       await TodoListEndpoints.EditTodoList(
-          updatedModel.Id, new TodoListDto { Title = updatedModel.Title, Description = updatedModel.Description }, serviceMock.Object);
+          updatedModel.Id, new TodoListDto
+          { Title = updatedModel.Title, Description = updatedModel.Description }, serviceMock.Object);
 
     Assert.IsType<NotFound>(result.Result);
     serviceMock.Verify();
