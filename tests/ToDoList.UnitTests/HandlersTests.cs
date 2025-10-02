@@ -75,25 +75,22 @@ public class HandlersTests
   [Fact]
   public async Task DeleteTodoList_ShouldReturnNoContent_WhenModelExists()
   {
-    TodoListModel model = new() { Title = "string" };
+    TodoListModel model = new() { Id = 1, Title = "string" };
     List<TodoListModel> models = [model];
 
     var serviceMock = new Mock<ITodoService>();
     serviceMock
-      .Setup(s => s.GetTodoListByIdAsync(It.IsAny<int>()).Result)
+      .Setup(s => s.DeleteTodoListAsync(It.Is<int>(
+              i => i == model.Id)).Result)
       .Returns(model)
-      .Verifiable(Times.Once());
-    serviceMock
-      .Setup(s => s.DeleteTodoListAsync(
-            It.Is<TodoListModel>(w => w.Title == model.Title)))
-      .Returns(Task.CompletedTask)
       .Callback<TodoListModel>(c => models.Remove(c))
       .Verifiable(Times.Once());
 
     var result =
-      await ApiEndpoints.DeleteTodoList(1, serviceMock.Object);
+      await ApiEndpoints.DeleteTodoList(model.Id, serviceMock.Object);
 
     Assert.IsType<NoContent>(result.Result);
+    Assert.Empty(models);
     serviceMock.Verify();
   }
 
@@ -105,13 +102,9 @@ public class HandlersTests
 
     var serviceMock = new Mock<ITodoService>();
     serviceMock
-      .Setup(s => s.GetTodoListByIdAsync(It.IsAny<int>()).Result)
+      .Setup(s => s.DeleteTodoListAsync(It.Is<int>(
+              i => i == model.Id)).Result)
       .Returns((TodoListModel?)null)
-      .Verifiable(Times.Once());
-    serviceMock
-      .Setup(s => s.DeleteTodoListAsync(
-            It.Is<TodoListModel>(w => w.Title == model.Title)))
-      .Returns(Task.CompletedTask)
       .Callback<TodoListModel>(c => models.Remove(c))
       .Verifiable(Times.Never());
 
