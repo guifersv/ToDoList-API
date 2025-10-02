@@ -9,5 +9,6 @@ public interface ITodoService
   public Task<TodoListModel?> GetTodoListByIdAsync(int id);
   public Task<TodoListModel?> UpdateTodoListAsync(TodoListModel todoListModel);
   public Task<TodoListModel?> DeleteTodoListAsync(int id);
+  public Task<IEnumerable<TodoModel>?> GetAllTodoAsync(int todoListId);
 }
 

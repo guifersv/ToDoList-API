@@ -65,5 +65,18 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
       return null;
     }
   }
+
+  public async Task<IEnumerable<TodoModel>?> GetAllTodoAsync(int todoListId)
+  {
+    _logger.LogInformation("TodoService: Retrieving todos");
+    var model = await _repository.GetTodoListByIdAsync(todoListId);
+    if (model is null)
+    {
+      _logger.LogWarning("TodoService: TodoListModel with id {todoListId} does not exist in database", todoListId);
+      return null;
+    }
+    else
+      return model.Todos;
+  }
 }
 
