@@ -79,7 +79,7 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
       return model.Todos;
   }
 
-  public async Task<TodoModel?> CreateTodoAsync(int todoListId, TodoModel todoModel)
+  public async Task<TodoModel?> CreateTodoAsync(int todoListId, TodoDto todoDto)
   {
     _logger.LogInformation("TodoService: Creating the todo");
     var model = await _repository.GetTodoListByIdAsync(todoListId);
@@ -91,6 +91,15 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
     }
     else
     {
+      TodoModel todoModel = new()
+      {
+        Title = todoDto.Title,
+        Description = todoDto.Description,
+        DateCreated = todoDto.DateCreated,
+        IsCompleted = todoDto.IsCompleted,
+        TodoListModelNavigation = model,
+
+      };
       ((List<TodoModel>)model.Todos).Add(todoModel);
       await _repository.UpdateTodoListAsync(model);
       return todoModel;

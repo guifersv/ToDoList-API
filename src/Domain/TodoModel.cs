@@ -14,3 +14,13 @@ public class TodoModel
   public int TodoListModelId { get; set; }
   public required TodoListModel TodoListModelNavigation { get; set; }
 }
+
+public record TodoDto
+{
+  [StringLength(20)]
+  public required string Title { get; init; }
+  [StringLength(100)]
+  public string? Description { get; init; }
+  public DateTime DateCreated { get; init; }
+  public bool IsCompleted { get; set; }
+}
