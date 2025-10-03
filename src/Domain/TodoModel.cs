@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ToDoList.Domain;
 
 public class TodoModel
 {
+  [BindNever]
   public int Id { get; set; }
   [StringLength(20)]
   public required string Title { get; init; }
@@ -17,10 +19,10 @@ public class TodoModel
 
 public record TodoDto
 {
-  [StringLength(20)]
-  public required string Title { get; init; }
-  [StringLength(100)]
-  public string? Description { get; init; }
-  public DateTime DateCreated { get; init; }
+  [BindNever]
+  public int Id { get; set; }
+  public required string Title { get; set; }
+  public string? Description { get; set; }
+  public DateTime DateCreated { get; set; }
   public bool IsCompleted { get; set; }
 }
