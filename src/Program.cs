@@ -2,7 +2,6 @@ using Serilog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using ToDoList.Infrastructure;
-using ToDoList.Endpoints;
 using ToDoList.Services.Interfaces;
 using ToDoList.Services;
 
@@ -52,12 +51,6 @@ try
   }
 
   app.UseHttpsRedirection();
-
-  app.MapGroup("")
-    .RouteTodoList();
-
-  app.MapGroup("/todo")
-    .RouteTodo();
 
   app.Run();
 }

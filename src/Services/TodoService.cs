@@ -26,7 +26,7 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
     var todoListModels = await _repository.GetAllTodoListsAsync();
 
     var todoListDtos = todoListModels
-      .Select(Utils.TodoList2Dto);
+      .Select(Utils.TodoList2Dto).ToList();
     return todoListDtos;
   }
 
