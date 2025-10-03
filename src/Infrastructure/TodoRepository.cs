@@ -16,12 +16,16 @@ public class TodoRepository(TodoDbContext context) : ITodoRepository
 
   public async Task<IEnumerable<TodoListModel>> GetAllTodoListsAsync()
   {
-    return await _context.TodoLists.AsNoTracking().ToListAsync();
+    var models = await _context.TodoLists.Include(
+        t => t.Todos).ToListAsync();
+    return models;
   }
 
-  public async Task<TodoListModel?> GetTodoListByIdAsync(int id)
+  public async Task<TodoListModel?> GetTodoListByIdAsync(int todoListId)
   {
-    return await _context.TodoLists.FindAsync(id);
+    var model = await _context.TodoLists.Include(
+        t => t.Todos).FirstAsync(m => m.Id == todoListId);
+    return model;
   }
 
   public async Task UpdateTodoListAsync(TodoListModel todoListModel)
