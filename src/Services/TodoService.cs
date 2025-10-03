@@ -20,12 +20,12 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
     return await _repository.GetAllTodoListsAsync();
   }
 
-  public async Task<TodoListModel?> GetTodoListByIdAsync(int id)
+  public async Task<TodoListModel?> GetTodoListByIdAsync(int todoListId)
   {
     _logger.LogInformation("TodoService: Retrieving todo list by id");
-    var result = await _repository.GetTodoListByIdAsync(id);
+    var result = await _repository.GetTodoListByIdAsync(todoListId);
     if (result is null)
-      _logger.LogWarning("TodoService: TodoListModel with id {id} does not exist in database", id);
+      _logger.LogWarning("TodoService: TodoListModel with id {id} does not exist in database", todoListId);
     return result;
   }
 
@@ -48,11 +48,11 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
     }
   }
 
-  public async Task<TodoListModel?> DeleteTodoListAsync(int id)
+  public async Task<TodoListModel?> DeleteTodoListAsync(int todoListId)
   {
     _logger.LogInformation("TodoService: Updating todo list");
 
-    var model = await _repository.GetTodoListByIdAsync(id);
+    var model = await _repository.GetTodoListByIdAsync(todoListId);
 
     if (model is not null)
     {
@@ -61,22 +61,9 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
     }
     else
     {
-      _logger.LogWarning("TodoService: TodoListModel with id {id} does not exist in database", id);
+      _logger.LogWarning("TodoService: TodoListModel with id {id} does not exist in database", todoListId);
       return null;
     }
-  }
-
-  public async Task<IEnumerable<TodoModel>?> GetAllTodoAsync(int todoListId)
-  {
-    _logger.LogInformation("TodoService: Retrieving todos");
-    var model = await _repository.GetTodoListByIdAsync(todoListId);
-    if (model is null)
-    {
-      _logger.LogWarning("TodoService: TodoListModel with id {todoListId} does not exist in database", todoListId);
-      return null;
-    }
-    else
-      return model.Todos;
   }
 
   public async Task<TodoModel?> CreateTodoAsync(int todoListId, TodoDto todoDto)

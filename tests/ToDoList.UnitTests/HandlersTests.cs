@@ -157,41 +157,5 @@ public class HandlersTests
     Assert.IsType<NotFound>(result.Result);
     serviceMock.Verify();
   }
-
-  [Fact]
-  public async Task GetTodos_ShouldReturnOkTodos_WhenModelExists()
-  {
-    TodoListModel model = new() { Id = 1, Title = "string" };
-    TodoModel todoModel = new() { Title = "todo", TodoListModelNavigation = model };
-    ((List<TodoModel>)model.Todos).Add(todoModel);
-
-    var serviceMock = new Mock<ITodoService>();
-    serviceMock
-      .Setup(s => s.GetAllTodoAsync(It.Is<int>(w => w == model.Id)).Result)
-      .Returns(model.Todos)
-      .Verifiable(Times.Once);
-
-    var result = await TodoEndpoints.GetTodos(
-        model.Id, serviceMock.Object);
-
-    var resultModel = Assert.IsType<Ok<IEnumerable<TodoModel>>>(result.Result);
-    Assert.Single(resultModel.Value!, todoModel);
-    serviceMock.Verify();
-  }
-
-  [Fact]
-  public async Task GetTodos_ShouldReturnNotFound_WhenModelDoesNotExist()
-  {
-    var serviceMock = new Mock<ITodoService>();
-    serviceMock
-      .Setup(s => s.GetAllTodoAsync(It.IsAny<int>()).Result)
-      .Returns((IEnumerable<TodoModel>?)null)
-      .Verifiable(Times.Once);
-
-    var result = await TodoEndpoints.GetTodos(
-        1, serviceMock.Object);
-
-    Assert.IsType<NotFound>(result.Result);
-    serviceMock.Verify();
-  }
 }
+

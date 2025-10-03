@@ -8,19 +8,19 @@ public static class TodoListEndpoints
 {
   public static RouteGroupBuilder RouteTodoList(this RouteGroupBuilder group)
   {
-    group.MapGet("/{id}", GetTodoList);
+    group.MapGet("/{todoListId}", GetTodoList).WithName(nameof(GetTodoList));
     group.MapGet("/", GetAllTodoLists);
-    group.MapPost("/", CreateTodoList).WithName(nameof(CreateTodoList));
-    group.MapDelete("/{id}", DeleteTodoList);
-    group.MapPut("/{id}", EditTodoList);
+    group.MapPost("/", CreateTodoList);
+    group.MapDelete("/{todoListId}", DeleteTodoList);
+    group.MapPut("/{todoListId}", EditTodoList);
 
     return group;
   }
 
   [EndpointSummary("Get Todo List")]
-  public static async Task<Results<Ok<TodoListModel>, NotFound>> GetTodoList(int id, ITodoService service)
+  public static async Task<Results<Ok<TodoListModel>, NotFound>> GetTodoList(int todoListId, ITodoService service)
   {
-    var model = await service.GetTodoListByIdAsync(id);
+    var model = await service.GetTodoListByIdAsync(todoListId);
 
     if (model is null)
       return TypedResults.NotFound();
@@ -45,13 +45,13 @@ public static class TodoListEndpoints
     await service.CreateTodoListAsync(model);
     var createdModel = await service.GetTodoListByIdAsync(model.Id);
 
-    return TypedResults.CreatedAtRoute(nameof(CreateTodoList), createdModel);
+    return TypedResults.CreatedAtRoute(nameof(GetTodoList), createdModel);
   }
 
   [EndpointSummary("Delete Todo List")]
-  public static async Task<Results<NotFound, NoContent>> DeleteTodoList(int id, ITodoService service)
+  public static async Task<Results<NotFound, NoContent>> DeleteTodoList(int todoListId, ITodoService service)
   {
-    var deletedModel = await service.DeleteTodoListAsync(id);
+    var deletedModel = await service.DeleteTodoListAsync(todoListId);
 
     if (deletedModel is null)
       return TypedResults.NotFound();
@@ -60,11 +60,11 @@ public static class TodoListEndpoints
   }
 
   [EndpointSummary("Edit Todo List")]
-  public static async Task<Results<NotFound, NoContent>> EditTodoList(int id, TodoListDto modelDto, ITodoService service)
+  public static async Task<Results<NotFound, NoContent>> EditTodoList(int todoListId, TodoListDto modelDto, ITodoService service)
   {
     var updatedModel = await service.UpdateTodoListAsync(new TodoListModel()
     {
-      Id = id,
+      Id = todoListId,
       Title = modelDto.Title,
       Description = modelDto.Description
     });
