@@ -1,6 +1,6 @@
 global using Moq;
 global using ToDoList.Domain;
-global using ToDoList.Infrastructure;
+global using ToDoList.Endpoints;
 global using ToDoList.Utilities;
 global using ToDoList.Services;
 global using ToDoList.Services.Interfaces;
