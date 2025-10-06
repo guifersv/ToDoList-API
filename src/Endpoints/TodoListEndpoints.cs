@@ -9,7 +9,7 @@ public static class TodoListEndpoints
   public static RouteGroupBuilder RouteTodoListEndpoint(this RouteGroupBuilder group)
   {
     group.MapGet("/", GetAllTodoLists);
-    group.MapGet("/{todoListId}", GetTodoList);
+    group.MapGet("/{todoListId}", GetTodoList).WithName(nameof(GetTodoList));
     return group;
   }
 
