@@ -116,4 +116,38 @@ public class EndpointsTests
     Assert.IsType<NotFound>(result.Result);
     serviceMock.Verify();
   }
+
+  [Fact]
+  public async Task DeleteTodoList_ShouldReturnNoContent_WhenModelExists()
+  {
+    TodoListDto model = new() { Id = 1, Title = "string" };
+
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.DeleteTodoListAsync(It.Is<int>(id => id == model.Id)).Result)
+      .Returns(model)
+      .Verifiable(Times.Once());
+
+    var result = await TodoListEndpoints.DeleteTodoList(model.Id, serviceMock.Object);
+
+    Assert.IsType<NoContent>(result.Result);
+    serviceMock.Verify();
+  }
+
+  [Fact]
+  public async Task DeleteTodoList_ShouldReturnNotFound_WhenModelDoesNotExist()
+  {
+    TodoListDto model = new() { Id = 1, Title = "string" };
+
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.DeleteTodoListAsync(It.Is<int>(id => id == model.Id)).Result)
+      .Returns((TodoListDto?)null)
+      .Verifiable(Times.Once());
+
+    var result = await TodoListEndpoints.DeleteTodoList(model.Id, serviceMock.Object);
+
+    Assert.IsType<NotFound>(result.Result);
+    serviceMock.Verify();
+  }
 }
