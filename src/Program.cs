@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using ToDoList.Infrastructure;
 using ToDoList.Services.Interfaces;
 using ToDoList.Services;
+using ToDoList.Endpoints;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -51,6 +52,9 @@ try
   }
 
   app.UseHttpsRedirection();
+
+  app.MapGroup("").RouteTodoListEndpoint();
+  app.MapGroup("/todo").RouteTodoEndpoint();
 
   app.Run();
 }
