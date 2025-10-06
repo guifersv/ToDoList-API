@@ -50,7 +50,28 @@ public class EndpointsTests
 
     var result = await TodoListEndpoints.GetTodoList(1, serviceMock.Object);
 
-    var returnedModel = Assert.IsType<NotFound>(result.Result);
+    Assert.IsType<NotFound>(result.Result);
+    serviceMock.Verify();
+  }
+
+  [Fact]
+  public async Task CreateTodoList_ShouldReturnCreatedAtRoute_WhenModelIsValid()
+  {
+    TodoListDto model = new() { Id = 1, Title = "string" };
+
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.CreateTodoListAsync(
+            It.Is<TodoListDto>(d => d.Id == model.Id && d.Title == model.Title)).Result)
+      .Returns(model)
+      .Verifiable(Times.Once());
+
+    var result = await TodoListEndpoints.CreateTodoList(model, serviceMock.Object);
+    var returnedModel = Assert.IsType<CreatedAtRoute>(result);
+
+    var value = Assert.Single(returnedModel.RouteValues);
+    Assert.Equal(model.Id, value.Value);
+    Assert.Equal(nameof(TodoListEndpoints.GetTodoList), returnedModel.RouteName);
     serviceMock.Verify();
   }
 }

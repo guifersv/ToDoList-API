@@ -3,22 +3,23 @@ namespace ToDoList.UnitTests;
 public class ServicesTests
 {
   [Fact]
-  public async Task CreateTodoListAsync_ShouldCallRepositoryOnce()
+  public async Task CreateTodoListAsync_ShouldReturnTodoListDto_ShouldCallRepositoryOnce()
   {
-    TodoListDto model = new() { Title = "string" };
+    TodoListModel model = new() { Title = "string" };
 
     var logger = Mock.Of<ILogger<TodoService>>();
 
     var repositoryMock = new Mock<ITodoRepository>();
     repositoryMock
       .Setup(r => r.CreateTodoListAsync(
-          It.Is<TodoListModel>(m => m.Title == model.Title)))
-      .Returns(Task.CompletedTask)
+          It.Is<TodoListModel>(m => m.Title == model.Title)).Result)
+      .Returns(model)
       .Verifiable(Times.Once());
 
     var service = new TodoService(repositoryMock.Object, logger);
-    await service.CreateTodoListAsync(model);
+    var returnedModel = await service.CreateTodoListAsync(Utils.TodoList2Dto(model));
 
+    Assert.Equal(Utils.TodoList2Dto(model), returnedModel);
     repositoryMock.Verify();
   }
 

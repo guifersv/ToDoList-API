@@ -8,10 +8,11 @@ public class TodoRepository(TodoDbContext context) : ITodoRepository
 {
   private readonly TodoDbContext _context = context;
 
-  public async Task CreateTodoListAsync(TodoListModel todoListModel)
+  public async Task<TodoListModel> CreateTodoListAsync(TodoListModel todoListModel)
   {
-    await _context.TodoLists.AddAsync(todoListModel);
+    var createdModel = await _context.TodoLists.AddAsync(todoListModel);
     await _context.SaveChangesAsync();
+    return createdModel.Entity;
   }
 
   public async Task<IEnumerable<TodoListModel>> GetAllTodoListsAsync()
