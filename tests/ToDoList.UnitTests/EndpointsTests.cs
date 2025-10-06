@@ -69,8 +69,8 @@ public class EndpointsTests
     var result = await TodoListEndpoints.CreateTodoList(model, serviceMock.Object);
     var returnedModel = Assert.IsType<CreatedAtRoute>(result);
 
-    var value = Assert.Single(returnedModel.RouteValues);
-    Assert.Equal(model.Id, value.Value);
+    var values = Assert.Single(returnedModel.RouteValues);
+    Assert.Equal(model.Id, values.Value);
     Assert.Equal(nameof(TodoListEndpoints.GetTodoList), returnedModel.RouteName);
     serviceMock.Verify();
   }
