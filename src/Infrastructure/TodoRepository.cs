@@ -24,7 +24,7 @@ public class TodoRepository(TodoDbContext context) : ITodoRepository
   public async Task<TodoListModel?> GetTodoListByIdAsync(int todoListId)
   {
     var model = await _context.TodoLists.Include(
-        t => t.Todos).FirstAsync(m => m.Id == todoListId);
+        t => t.Todos).FirstOrDefaultAsync(m => m.Id == todoListId);
     return model;
   }
 
