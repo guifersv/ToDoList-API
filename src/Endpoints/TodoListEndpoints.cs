@@ -11,6 +11,8 @@ public static class TodoListEndpoints
     group.MapGet("/", GetAllTodoLists);
     group.MapGet("/{todoListId}", GetTodoList).WithName(nameof(GetTodoList));
     group.MapPost("/", CreateTodoList);
+    group.MapPut("/{todoListId}", UpdateTodoList);
+
     return group;
   }
 
@@ -36,5 +38,16 @@ public static class TodoListEndpoints
   {
     var createdModel = await service.CreateTodoListAsync(todoListDto);
     return TypedResults.CreatedAtRoute(nameof(GetTodoList), new { todoListId = createdModel.Id });
+  }
+
+  [EndpointSummary("Update todo list")]
+  public static async Task<Results<NoContent, NotFound>> UpdateTodoList(int todoListId, TodoListDto todoListDto, ITodoService service)
+  {
+    var updatedModel = await service.UpdateTodoListAsync(todoListId, todoListDto);
+
+    if (updatedModel is not null)
+      return TypedResults.NoContent();
+    else
+      return TypedResults.NotFound();
   }
 }

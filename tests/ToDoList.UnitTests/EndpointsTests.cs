@@ -74,4 +74,46 @@ public class EndpointsTests
     Assert.Equal(nameof(TodoListEndpoints.GetTodoList), returnedModel.RouteName);
     serviceMock.Verify();
   }
+
+  [Fact]
+  public async Task UpdateTodoList_ShouldReturnNoContent_WhenModelExists()
+  {
+    TodoListDto model = new() { Id = 1, Title = "string" };
+    TodoListDto updatedModel = new() { Id = 1, Title = "str" };
+
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.UpdateTodoListAsync(
+            It.Is<int>(id => id == updatedModel.Id),
+            It.Is<TodoListDto>(m => m.Id == updatedModel.Id && m.Title == updatedModel.Title)).Result)
+      .Returns(updatedModel)
+      .Callback<int, TodoListDto>((_, n) => model = n)
+      .Verifiable(Times.Once());
+
+    var result = await TodoListEndpoints.UpdateTodoList(updatedModel.Id, updatedModel, serviceMock.Object);
+
+    Assert.IsType<NoContent>(result.Result);
+    Assert.Equal(updatedModel, model);
+    serviceMock.Verify();
+  }
+
+  [Fact]
+  public async Task UpdateTodoList_ShouldReturnNotFound_WhenModelDoesNotExist()
+  {
+    TodoListDto model = new() { Id = 1, Title = "string" };
+    TodoListDto updatedModel = new() { Id = 1, Title = "str" };
+
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.UpdateTodoListAsync(
+            It.Is<int>(id => id == updatedModel.Id),
+            It.Is<TodoListDto>(m => m.Id == updatedModel.Id && m.Title == updatedModel.Title)).Result)
+      .Returns((TodoListDto?)null)
+      .Verifiable(Times.Once());
+
+    var result = await TodoListEndpoints.UpdateTodoList(updatedModel.Id, updatedModel, serviceMock.Object);
+
+    Assert.IsType<NotFound>(result.Result);
+    serviceMock.Verify();
+  }
 }
