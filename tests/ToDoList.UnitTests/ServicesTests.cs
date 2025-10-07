@@ -253,7 +253,7 @@ public class ServicesTests
   }
 
   [Fact]
-  public async Task CreateTodoAsync_ShouldReturnDto_WhenTodoListExist()
+  public async Task CreateTodoAsync_ShouldReturnDto_WhenTodoListExists()
   {
     TodoListModel todoList = new() { Id = 1, Title = "string" };
     TodoModel todoModel = new()
@@ -263,7 +263,6 @@ public class ServicesTests
       TodoListModelId = todoList.Id,
       TodoListModelNavigation = todoList
     };
-
 
     var logger = Mock.Of<ILogger<TodoService>>();
 
@@ -285,6 +284,40 @@ public class ServicesTests
 
     Assert.NotNull(result);
     Assert.IsType<TodoDto>(result);
+    repositoryMock.Verify();
+  }
+
+  [Fact]
+  public async Task CreateTodoAsync_ShouldReturnNull_WhenTodoListDoesNotExist()
+  {
+    TodoListModel todoList = new() { Id = 1, Title = "string" };
+    TodoModel todoModel = new()
+    {
+      Id = 1,
+      Title = "string",
+      TodoListModelId = todoList.Id,
+      TodoListModelNavigation = todoList
+    };
+
+    var logger = Mock.Of<ILogger<TodoService>>();
+
+    var repositoryMock = new Mock<ITodoRepository>();
+    repositoryMock
+      .Setup(r => r.GetTodoListByIdAsync(
+            It.Is<int>(id => id == todoModel.TodoListModelId)).Result)
+      .Returns((TodoListModel?)null)
+      .Verifiable(Times.Once());
+    repositoryMock
+      .Setup(r => r.UpdateTodoListAsync(
+            It.Is<TodoListModel>(
+              s => s.Id == todoList.Id && s.Title == todoList.Title)))
+      .Returns(Task.CompletedTask)
+      .Verifiable(Times.Never());
+
+    var service = new TodoService(repositoryMock.Object, logger);
+    var result = await service.CreateTodoAsync(Utils.Todo2Dto(todoModel));
+
+    Assert.Null(result);
     repositoryMock.Verify();
   }
 }
