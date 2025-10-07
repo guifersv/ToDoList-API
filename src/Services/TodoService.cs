@@ -105,7 +105,7 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
 
   public async Task<TodoDto?> CreateTodoAsync(TodoDto todoDto)
   {
-    TodoListModel? todoList = await _repository.GetTodoListByIdAsync(todoDto.TodoListModelId);
+    var todoList = await _repository.GetTodoListByIdAsync(todoDto.TodoListModelId);
 
     if (todoList is not null)
     {

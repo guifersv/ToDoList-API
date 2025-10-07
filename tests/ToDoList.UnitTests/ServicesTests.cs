@@ -5,7 +5,7 @@ public class ServicesTests
   [Fact]
   public async Task CreateTodoListAsync_ShouldReturnTodoListDto_ShouldCallRepositoryOnce()
   {
-    TodoListModel model = new() { Title = "string" };
+    TodoListModel model = new() { Title = "string", Todos = [] };
 
     var logger = Mock.Of<ILogger<TodoService>>();
 
@@ -26,7 +26,7 @@ public class ServicesTests
   [Fact]
   public async Task GetAllTodoListsAsync_ShouldReturnListOfModels_WhenTheyExist()
   {
-    TodoListModel model = new() { Title = "string" };
+    TodoListModel model = new() { Title = "string", Todos = [] };
     List<TodoListModel> models = [model];
 
     var logger = Mock.Of<ILogger<TodoService>>();
@@ -69,7 +69,7 @@ public class ServicesTests
   [Fact]
   public async Task GetTodoListByIdAsync_ShouldReturnModel_IfItExistsInDB()
   {
-    TodoListModel model = new() { Id = 1, Title = "string" };
+    TodoListModel model = new() { Id = 1, Title = "string", Todos = [] };
 
     var logger = Mock.Of<ILogger<TodoService>>();
 
@@ -111,8 +111,8 @@ public class ServicesTests
   [Fact]
   public async Task UpdateTodoListAsync_ShouldUpdateModel_WhenItExistsInDatabase()
   {
-    TodoListModel model = new() { Id = 1, Title = "string" };
-    TodoListModel updatedModel = new() { Id = 1, Title = "new" };
+    TodoListModel model = new() { Id = 1, Title = "string", Todos = [] };
+    TodoListModel updatedModel = new() { Id = 1, Title = "new", Todos = [] };
 
     var logger = Mock.Of<ILogger<TodoService>>();
 
@@ -141,8 +141,8 @@ public class ServicesTests
   [Fact]
   public async Task UpdateTodoListAsync_ShouldNotUpdateModel_WhenItDoesNotExistInDatabase()
   {
-    TodoListModel model = new() { Id = 1, Title = "string" };
-    TodoListModel updatedModel = new() { Id = 1, Title = "new" };
+    TodoListModel model = new() { Id = 1, Title = "string", Todos = [] };
+    TodoListModel updatedModel = new() { Id = 1, Title = "new", Todos = [] };
 
     var logger = Mock.Of<ILogger<TodoService>>();
 
@@ -172,7 +172,7 @@ public class ServicesTests
   [Fact]
   public async Task DeleteTodoListAsync_DeleteModel_WhenItExistsInDatabase()
   {
-    TodoListModel model = new() { Id = 1, Title = "string" };
+    TodoListModel model = new() { Id = 1, Title = "string", Todos = [] };
     List<TodoListModel> models = [model];
 
     var logger = Mock.Of<ILogger<TodoService>>();
@@ -202,7 +202,7 @@ public class ServicesTests
   [Fact]
   public async Task DeleteTodoListAsync_ShouldNotDeleteModel_WhenItDoesNotExistInDatabase()
   {
-    TodoListModel model = new() { Id = 1, Title = "string" };
+    TodoListModel model = new() { Id = 1, Title = "string", Todos = [] };
     List<TodoListModel> models = [model];
 
     var logger = Mock.Of<ILogger<TodoService>>();
@@ -230,9 +230,9 @@ public class ServicesTests
   }
 
   [Fact]
-  public async Task GetTodoById_ShouldReturnModel_WhenItExists()
+  public async Task GetTodoByIdAsync_ShouldReturnModel_WhenItExists()
   {
-    TodoListModel todoList = new() { Id = 1, Title = "string" };
+    TodoListModel todoList = new() { Id = 1, Title = "string", Todos = [] };
     TodoModel todoModel = new() { Id = 1, Title = "string", TodoListModelNavigation = todoList };
 
     var logger = Mock.Of<ILogger<TodoService>>();
@@ -246,9 +246,45 @@ public class ServicesTests
     var service = new TodoService(repositoryMock.Object, logger);
     var result = await service.GetTodoByIdAsync(todoModel.Id);
 
-    Assert.IsType<TodoDto>(result);
     Assert.NotNull(result);
+    Assert.IsType<TodoDto>(result);
     Assert.Equal(Utils.Todo2Dto(todoModel), result);
+    repositoryMock.Verify();
+  }
+
+  [Fact]
+  public async Task CreateTodoAsync_ShouldReturnDto_WhenTodoListExist()
+  {
+    TodoListModel todoList = new() { Id = 1, Title = "string" };
+    TodoModel todoModel = new()
+    {
+      Id = 1,
+      Title = "string",
+      TodoListModelId = todoList.Id,
+      TodoListModelNavigation = todoList
+    };
+
+
+    var logger = Mock.Of<ILogger<TodoService>>();
+
+    var repositoryMock = new Mock<ITodoRepository>();
+    repositoryMock
+      .Setup(r => r.GetTodoListByIdAsync(
+            It.Is<int>(id => id == todoModel.TodoListModelId)).Result)
+      .Returns(todoList)
+      .Verifiable(Times.Once());
+    repositoryMock
+      .Setup(r => r.UpdateTodoListAsync(
+            It.Is<TodoListModel>(
+              s => s.Id == todoList.Id && s.Title == todoList.Title)))
+      .Returns(Task.CompletedTask)
+      .Verifiable(Times.Once());
+
+    var service = new TodoService(repositoryMock.Object, logger);
+    var result = await service.CreateTodoAsync(Utils.Todo2Dto(todoModel));
+
+    Assert.NotNull(result);
+    Assert.IsType<TodoDto>(result);
     repositoryMock.Verify();
   }
 }
