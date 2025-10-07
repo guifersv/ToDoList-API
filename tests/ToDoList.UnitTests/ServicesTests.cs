@@ -230,47 +230,6 @@ public class ServicesTests
   }
 
   [Fact]
-  public async Task GetTodoByIdAsync_ShouldReturnModel_WhenItExists()
-  {
-    TodoListModel todoList = new() { Id = 1, Title = "string", Todos = [] };
-    TodoModel todoModel = new() { Id = 1, Title = "string", TodoListModelNavigation = todoList };
-
-    var logger = Mock.Of<ILogger<TodoService>>();
-
-    var repositoryMock = new Mock<ITodoRepository>();
-    repositoryMock
-      .Setup(r => r.GetTodoByIdAsync(It.Is<int>(id => id == todoModel.Id)).Result)
-      .Returns(todoModel)
-      .Verifiable(Times.Once());
-
-    var service = new TodoService(repositoryMock.Object, logger);
-    var result = await service.GetTodoByIdAsync(todoModel.Id);
-
-    Assert.NotNull(result);
-    Assert.IsType<TodoDto>(result);
-    Assert.Equal(Utils.Todo2Dto(todoModel), result);
-    repositoryMock.Verify();
-  }
-
-  [Fact]
-  public async Task GetTodoByIdAsync_ShouldReturnNull_WhenModelDoesNotExist()
-  {
-    var logger = Mock.Of<ILogger<TodoService>>();
-
-    var repositoryMock = new Mock<ITodoRepository>();
-    repositoryMock
-      .Setup(r => r.GetTodoByIdAsync(It.IsAny<int>()).Result)
-      .Returns((TodoModel?)null)
-      .Verifiable(Times.Once());
-
-    var service = new TodoService(repositoryMock.Object, logger);
-    var result = await service.GetTodoByIdAsync(1);
-
-    Assert.Null(result);
-    repositoryMock.Verify();
-  }
-
-  [Fact]
   public async Task CreateTodoAsync_ShouldReturnDto_WhenTodoListExists()
   {
     TodoListModel todoList = new() { Id = 1, Title = "string" };
@@ -298,7 +257,7 @@ public class ServicesTests
       .Verifiable(Times.Once());
 
     var service = new TodoService(repositoryMock.Object, logger);
-    var result = await service.CreateTodoAsync(Utils.Todo2Dto(todoModel));
+    var result = await service.CreateTodoAsync(todoList.Id, Utils.Todo2Dto(todoModel));
 
     Assert.NotNull(result);
     Assert.IsType<TodoDto>(result);
@@ -333,7 +292,7 @@ public class ServicesTests
       .Verifiable(Times.Never());
 
     var service = new TodoService(repositoryMock.Object, logger);
-    var result = await service.CreateTodoAsync(Utils.Todo2Dto(todoModel));
+    var result = await service.CreateTodoAsync(todoList.Id, Utils.Todo2Dto(todoModel));
 
     Assert.Null(result);
     repositoryMock.Verify();

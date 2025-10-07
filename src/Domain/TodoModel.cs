@@ -24,5 +24,4 @@ public record TodoDto
   public string? Description { get; set; }
   public DateTime DateCreated { get; set; }
   public bool IsCompleted { get; set; }
-  public int TodoListModelId { get; set; }
 }

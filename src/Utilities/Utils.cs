@@ -32,7 +32,6 @@ public static class Utils
       Description = todoModel.Description,
       DateCreated = todoModel.DateCreated,
       IsCompleted = todoModel.IsCompleted,
-      TodoListModelId = todoModel.TodoListModelId,
     };
     return todoDto;
   }

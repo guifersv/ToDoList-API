@@ -152,32 +152,32 @@ public class EndpointsTests
   }
 
   [Fact]
-  public async Task GetTodo_ShouldReturnOk_WhenItExists()
+  public async Task CreateTodo_ShouldReturnCreated_WhenTodoListExists()
   {
-    TodoDto model = new() { Id = 1, Title = "string" };
+    TodoDto model = new() { Title = "string" };
     var serviceMock = new Mock<ITodoService>();
     serviceMock
-      .Setup(s => s.GetTodoByIdAsync(It.Is<int>(id => id == model.Id)).Result)
+      .Setup(s => s.CreateTodoAsync(It.IsAny<int>(), It.Is<TodoDto>(m => m.Title == model.Title)).Result)
       .Returns(model)
       .Verifiable(Times.Once());
 
-    var result = await TodoEndpoints.GetTodo(model.Id, serviceMock.Object);
+    var result = await TodoEndpoints.CreateTodo(1, model, serviceMock.Object);
 
-    var returnedModel = Assert.IsType<Ok<TodoDto>>(result.Result);
-    Assert.Equal(model, returnedModel.Value);
+    Assert.IsType<Created>(result.Result);
     serviceMock.Verify();
   }
 
   [Fact]
-  public async Task GetTodo_ShouldReturnNotFound_WhenItDoesNotExist()
+  public async Task CreateTodo_ShouldReturnNotFound_WhenTodoListDoesNotExist()
   {
+    TodoDto model = new() { Title = "string" };
     var serviceMock = new Mock<ITodoService>();
     serviceMock
-      .Setup(s => s.GetTodoByIdAsync(It.IsAny<int>()).Result)
+      .Setup(s => s.CreateTodoAsync(It.IsAny<int>(), It.Is<TodoDto>(m => m.Title == model.Title)).Result)
       .Returns((TodoDto?)null)
       .Verifiable(Times.Once());
 
-    var result = await TodoEndpoints.GetTodo(1, serviceMock.Object);
+    var result = await TodoEndpoints.CreateTodo(1, model, serviceMock.Object);
 
     Assert.IsType<NotFound>(result.Result);
     serviceMock.Verify();

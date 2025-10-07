@@ -8,19 +8,18 @@ public static class TodoEndpoints
 {
   public static RouteGroupBuilder RouteTodoEndpoint(this RouteGroupBuilder group)
   {
-    group.MapGet("/{todoId}", GetTodo).WithName(nameof(GetTodo));
+    group.MapPost("/{todoListId}", CreateTodo);
 
     return group;
   }
 
-  public static async Task<Results<Ok<TodoDto>, NotFound>> GetTodo(int todoId, ITodoService service)
+  public static async Task<Results<Created, NotFound>> CreateTodo(int todoListId, TodoDto todoDto, ITodoService service)
   {
-    var todoModel = await service.GetTodoByIdAsync(todoId);
+    var createdModel = await service.CreateTodoAsync(todoListId, todoDto);
 
-    if (todoModel is not null)
-      return TypedResults.Ok(todoModel);
+    if (createdModel is not null)
+      return TypedResults.Created();
     else
       return TypedResults.NotFound();
-
   }
 }

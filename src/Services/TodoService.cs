@@ -86,37 +86,18 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
     }
   }
 
-  public async Task<TodoDto?> GetTodoByIdAsync(int todoId)
+  public async Task<TodoDto?> CreateTodoAsync(int todoListId, TodoDto todoDto)
   {
-    _logger.LogInformation("TodoService: Retrieving todo");
-
-    var model = await _repository.GetTodoByIdAsync(todoId);
-
-    if (model is not null)
-    {
-      return Utils.Todo2Dto(model);
-    }
-    else
-    {
-      _logger.LogWarning("TodoService: TodoList with id {id} does not exist in database", todoId);
-      return null;
-    }
-  }
-
-  public async Task<TodoDto?> CreateTodoAsync(TodoDto todoDto)
-  {
-    var todoList = await _repository.GetTodoListByIdAsync(todoDto.TodoListModelId);
+    var todoList = await _repository.GetTodoListByIdAsync(todoListId);
 
     if (todoList is not null)
     {
       TodoModel todoModel = new()
       {
-        Id = todoDto.Id,
         Title = todoDto.Title,
         Description = todoDto.Description,
         DateCreated = todoDto.DateCreated,
         IsCompleted = todoDto.IsCompleted,
-        TodoListModelId = todoDto.TodoListModelId,
         TodoListModelNavigation = todoList,
       };
       ((List<TodoModel>)todoList.Todos).Add(todoModel);
