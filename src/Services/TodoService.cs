@@ -102,4 +102,28 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
       return null;
     }
   }
+
+  public async Task<TodoDto?> CreateTodoAsync(TodoDto todoDto)
+  {
+    TodoListModel? todoList = await _repository.GetTodoListByIdAsync(todoDto.TodoListModelId);
+
+    if (todoList is not null)
+    {
+      TodoModel todoModel = new()
+      {
+        Id = todoDto.Id,
+        Title = todoDto.Title,
+        Description = todoDto.Description,
+        DateCreated = todoDto.DateCreated,
+        IsCompleted = todoDto.IsCompleted,
+        TodoListModelId = todoDto.TodoListModelId,
+        TodoListModelNavigation = todoList,
+      };
+      ((List<TodoModel>)todoList.Todos).Add(todoModel);
+      await _repository.UpdateTodoListAsync(todoList);
+      return todoDto;
+    }
+    else
+      return null;
+  }
 }
