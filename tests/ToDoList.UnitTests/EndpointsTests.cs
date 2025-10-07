@@ -150,4 +150,36 @@ public class EndpointsTests
     Assert.IsType<NotFound>(result.Result);
     serviceMock.Verify();
   }
+
+  [Fact]
+  public async Task GetTodo_ShouldReturnOk_WhenItExists()
+  {
+    TodoDto model = new() { Id = 1, Title = "string" };
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.GetTodoByIdAsync(It.Is<int>(id => id == model.Id)).Result)
+      .Returns(model)
+      .Verifiable(Times.Once());
+
+    var result = await TodoEndpoints.GetTodo(model.Id, serviceMock.Object);
+
+    var returnedModel = Assert.IsType<Ok<TodoDto>>(result.Result);
+    Assert.Equal(model, returnedModel.Value);
+    serviceMock.Verify();
+  }
+
+  [Fact]
+  public async Task GetTodo_ShouldReturnNotFound_WhenItDoesNotExist()
+  {
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.GetTodoByIdAsync(It.IsAny<int>()).Result)
+      .Returns((TodoDto?)null)
+      .Verifiable(Times.Once());
+
+    var result = await TodoEndpoints.GetTodo(1, serviceMock.Object);
+
+    Assert.IsType<NotFound>(result.Result);
+    serviceMock.Verify();
+  }
 }
