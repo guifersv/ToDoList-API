@@ -40,4 +40,9 @@ public class TodoRepository(TodoDbContext context) : ITodoRepository
     _context.TodoLists.Remove(todoListModel);
     await _context.SaveChangesAsync();
   }
+
+  public async Task<TodoModel?> GetTodoByIdAsync(int todoId)
+  {
+    return await _context.Todos.FindAsync(todoId);
+  }
 }

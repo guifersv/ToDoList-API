@@ -22,4 +22,18 @@ public static class Utils
     };
     return todoListDto;
   }
+
+  public static TodoDto Todo2Dto(TodoModel todoModel)
+  {
+    TodoDto todoDto = new()
+    {
+      Id = todoModel.Id,
+      Title = todoModel.Title,
+      Description = todoModel.Description,
+      DateCreated = todoModel.DateCreated,
+      IsCompleted = todoModel.IsCompleted,
+      TodoListModelId = todoModel.TodoListModelId,
+    };
+    return todoDto;
+  }
 }
