@@ -122,7 +122,8 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
       return Utils.Todo2Dto(model);
     }
     else
-      return null;
+      _logger.LogWarning("TodoService: TodoModel with id {id} does not exist in database", todoId);
+    return null;
   }
 
   public async Task<TodoDto?> ChangeTodoIsCompleteAsync(int todoId)
@@ -137,6 +138,7 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
       return Utils.Todo2Dto(model);
     }
     else
-      return null;
+      _logger.LogWarning("TodoService: TodoModel with id {id} does not exist in database", todoId);
+    return null;
   }
 }
