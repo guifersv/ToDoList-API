@@ -10,6 +10,7 @@ public static class TodoEndpoints
   {
     group.MapPost("/{todoListId}", CreateTodo);
     group.MapDelete("/{todoId}", DeleteTodo);
+    group.MapPatch("/{todoId}", ChangeTodoIsComplete);
 
     return group;
   }
@@ -29,6 +30,16 @@ public static class TodoEndpoints
     var deletedModel = await service.DeleteTodoAsync(todoId);
 
     if (deletedModel is not null)
+      return TypedResults.NoContent();
+    else
+      return TypedResults.NotFound();
+  }
+
+  public static async Task<Results<NoContent, NotFound>> ChangeTodoIsComplete(int todoId, ITodoService service)
+  {
+    var changedModel = await service.ChangeTodoIsCompleteAsync(todoId);
+
+    if (changedModel is not null)
       return TypedResults.NoContent();
     else
       return TypedResults.NotFound();

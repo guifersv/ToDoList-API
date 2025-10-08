@@ -210,4 +210,36 @@ public class EndpointsTests
     Assert.IsType<NotFound>(result.Result);
     serviceMock.Verify();
   }
+
+  [Fact]
+  public async Task ChangeTodoIsComplete_ShouldReturnNoContent_WhenTodoExists()
+  {
+    TodoDto model = new() { Title = "string" };
+
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.ChangeTodoIsCompleteAsync(It.IsAny<int>()).Result)
+      .Returns(model)
+      .Verifiable(Times.Once());
+
+    var result = await TodoEndpoints.ChangeTodoIsComplete(1, serviceMock.Object);
+
+    Assert.IsType<NoContent>(result.Result);
+    serviceMock.Verify();
+  }
+
+  [Fact]
+  public async Task ChangeTodoIsComplete_ShouldReturnNotFound_WhenTodoDoesNotExist()
+  {
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.ChangeTodoIsCompleteAsync(It.IsAny<int>()).Result)
+      .Returns((TodoDto?)null)
+      .Verifiable(Times.Once());
+
+    var result = await TodoEndpoints.ChangeTodoIsComplete(1, serviceMock.Object);
+
+    Assert.IsType<NotFound>(result.Result);
+    serviceMock.Verify();
+  }
 }
