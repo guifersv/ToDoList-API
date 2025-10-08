@@ -178,4 +178,36 @@ public class EndpointsTests
     Assert.IsType<NotFound>(result.Result);
     serviceMock.Verify();
   }
+
+  [Fact]
+  public async Task DeleteTodo_ShouldReturnNoContent_WhenTodoExists()
+  {
+    TodoDto model = new() { Title = "string" };
+
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.DeleteTodoAsync(It.IsAny<int>()).Result)
+      .Returns(model)
+      .Verifiable(Times.Once());
+
+    var result = await TodoEndpoints.DeleteTodo(1, serviceMock.Object);
+
+    Assert.IsType<NoContent>(result.Result);
+    serviceMock.Verify();
+  }
+
+  [Fact]
+  public async Task DeleteTodo_ShouldReturnNotFound_WhenTodoDoesNotExist()
+  {
+    var serviceMock = new Mock<ITodoService>();
+    serviceMock
+      .Setup(s => s.DeleteTodoAsync(It.IsAny<int>()).Result)
+      .Returns((TodoDto?)null)
+      .Verifiable(Times.Once());
+
+    var result = await TodoEndpoints.DeleteTodo(1, serviceMock.Object);
+
+    Assert.IsType<NotFound>(result.Result);
+    serviceMock.Verify();
+  }
 }
