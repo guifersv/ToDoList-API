@@ -15,6 +15,7 @@ public static class TodoEndpoints
     return group;
   }
 
+  [EndpointSummary("Create Todo")]
   public static async Task<Results<Created, NotFound>> CreateTodo(int todoListId, TodoDto todoDto, ITodoService service)
   {
     var createdModel = await service.CreateTodoAsync(todoListId, todoDto);
@@ -25,6 +26,7 @@ public static class TodoEndpoints
       return TypedResults.NotFound();
   }
 
+  [EndpointSummary("Delete Todo")]
   public static async Task<Results<NoContent, NotFound>> DeleteTodo(int todoId, ITodoService service)
   {
     var deletedModel = await service.DeleteTodoAsync(todoId);
@@ -35,6 +37,7 @@ public static class TodoEndpoints
       return TypedResults.NotFound();
   }
 
+  [EndpointSummary("Change todo IsComplete property")]
   public static async Task<Results<NoContent, NotFound>> ChangeTodoIsComplete(int todoId, ITodoService service)
   {
     var changedModel = await service.ChangeTodoIsCompleteAsync(todoId);
