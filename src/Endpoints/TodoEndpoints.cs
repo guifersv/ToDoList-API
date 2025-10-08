@@ -37,7 +37,7 @@ public static class TodoEndpoints
       return TypedResults.NotFound();
   }
 
-  [EndpointSummary("Change todo IsComplete property")]
+  [EndpointSummary("Change Todo IsComplete property")]
   public static async Task<Results<NoContent, NotFound>> ChangeTodoIsComplete(int todoId, ITodoService service)
   {
     var changedModel = await service.ChangeTodoIsCompleteAsync(todoId);

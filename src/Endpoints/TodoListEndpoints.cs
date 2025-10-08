@@ -17,13 +17,13 @@ public static class TodoListEndpoints
     return group;
   }
 
-  [EndpointSummary("Get all todo list models")]
+  [EndpointSummary("Get all TodoList models")]
   public static async Task<IEnumerable<TodoListDto>> GetAllTodoLists(ITodoService service)
   {
     return await service.GetAllTodoListsAsync();
   }
 
-  [EndpointSummary("Get todo list model")]
+  [EndpointSummary("Get TodoList model")]
   public static async Task<Results<Ok<TodoListDto>, NotFound>> GetTodoList(int todoListId, ITodoService service)
   {
     var returnedModel = await service.GetTodoListByIdAsync(todoListId);
@@ -34,14 +34,14 @@ public static class TodoListEndpoints
       return TypedResults.NotFound();
   }
 
-  [EndpointSummary("Create todo list")]
+  [EndpointSummary("Create TodoList")]
   public static async Task<CreatedAtRoute> CreateTodoList(TodoListDto todoListDto, ITodoService service)
   {
     var createdModel = await service.CreateTodoListAsync(todoListDto);
     return TypedResults.CreatedAtRoute(nameof(GetTodoList), new { todoListId = createdModel.Id });
   }
 
-  [EndpointSummary("Update todo list")]
+  [EndpointSummary("Update TodoList")]
   public static async Task<Results<NoContent, NotFound>> UpdateTodoList(int todoListId, TodoListDto todoListDto, ITodoService service)
   {
     var updatedModel = await service.UpdateTodoListAsync(todoListId, todoListDto);
@@ -52,7 +52,7 @@ public static class TodoListEndpoints
       return TypedResults.NotFound();
   }
 
-  [EndpointSummary("Delete todo list")]
+  [EndpointSummary("Delete TodoList")]
   public static async Task<Results<NoContent, NotFound>> DeleteTodoList(int todoListId, ITodoService service)
   {
     var deletedModel = await service.DeleteTodoListAsync(todoListId);
