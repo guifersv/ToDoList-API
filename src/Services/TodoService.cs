@@ -110,4 +110,18 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
       _logger.LogWarning("TodoService: TodoListModel with id {id} does not exist in database", todoListId);
     return null;
   }
+
+  public async Task<TodoDto?> DeleteTodoAsync(int todoId)
+  {
+    _logger.LogInformation("TodoService: Deleting todo");
+
+    var model = await _repository.GetTodoByIdAsync(todoId);
+    if (model is not null)
+    {
+      await _repository.DeleteTodoAsync(model);
+      return Utils.Todo2Dto(model);
+    }
+    else
+      return null;
+  }
 }

@@ -45,4 +45,10 @@ public class TodoRepository(TodoDbContext context) : ITodoRepository
   {
     return await _context.Todos.FindAsync(todoId);
   }
+
+  public async Task DeleteTodoAsync(TodoModel todoModel)
+  {
+    _context.Todos.Remove(todoModel);
+    await _context.SaveChangesAsync();
+  }
 }

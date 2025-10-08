@@ -12,6 +12,6 @@ public interface ITodoService
 
   public Task<TodoDto?> CreateTodoAsync(int todoListId, TodoDto todoDto);
   // public Task<TodoDto?> UpdateTodoAsync(int todoId, TodoDto todoDto);
-  // public Task<TodoDto?> DeleteTodoAsync(int todoId);
+  public Task<TodoDto?> DeleteTodoAsync(int todoId);
 }
 
