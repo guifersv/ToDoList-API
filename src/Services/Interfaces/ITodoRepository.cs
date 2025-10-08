@@ -12,4 +12,5 @@ public interface ITodoRepository
 
   public Task<TodoModel?> GetTodoByIdAsync(int todoId);
   public Task DeleteTodoAsync(TodoModel todoModel);
+  public Task UpdateTodoAsync(TodoModel todoModel);
 }

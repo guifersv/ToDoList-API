@@ -124,4 +124,19 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
     else
       return null;
   }
+
+  public async Task<TodoDto?> ChangeTodoIsCompleteAsync(int todoId)
+  {
+    _logger.LogInformation("TodoService: Changing todo IsComplete property");
+
+    var model = await _repository.GetTodoByIdAsync(todoId);
+    if (model is not null)
+    {
+      model.IsCompleted = !model.IsCompleted;
+      await _repository.UpdateTodoAsync(model);
+      return Utils.Todo2Dto(model);
+    }
+    else
+      return null;
+  }
 }

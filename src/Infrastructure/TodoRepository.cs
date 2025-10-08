@@ -51,4 +51,10 @@ public class TodoRepository(TodoDbContext context) : ITodoRepository
     _context.Todos.Remove(todoModel);
     await _context.SaveChangesAsync();
   }
+
+  public async Task UpdateTodoAsync(TodoModel todoModel)
+  {
+    _context.Todos.Update(todoModel);
+    await _context.SaveChangesAsync();
+  }
 }
