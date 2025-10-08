@@ -385,7 +385,7 @@ public class ServicesTests
       .Returns(todoModel)
       .Verifiable(Times.Once());
     repositoryMock
-      .Setup(r => r.UpdateTodoAsync(todoModel))
+      .Setup(r => r.UpdateTodoAsync(It.Is<TodoModel>(w => w == todoModel)))
       .Returns(Task.CompletedTask)
       .Verifiable(Times.Once());
 
@@ -395,6 +395,38 @@ public class ServicesTests
     Assert.NotNull(result);
     Assert.IsType<TodoDto>(result);
     Assert.False(result.IsCompleted);
+    repositoryMock.Verify();
+  }
+
+  [Fact]
+  public async Task ChangeTodoIsCompleteAsync_ShouldReturnNull_WhenTodoDoesNotExist()
+  {
+    TodoListModel todoList = new() { Id = 1, Title = "string" };
+    TodoModel todoModel = new()
+    {
+      Id = 1,
+      Title = "string",
+      IsCompleted = true,
+      TodoListModelId = todoList.Id,
+      TodoListModelNavigation = todoList
+    };
+    var logger = Mock.Of<ILogger<TodoService>>();
+
+    var repositoryMock = new Mock<ITodoRepository>();
+    repositoryMock
+      .Setup(r => r.GetTodoByIdAsync(
+            It.IsAny<int>()).Result)
+      .Returns((TodoModel?)null)
+      .Verifiable(Times.Once());
+    repositoryMock
+      .Setup(r => r.UpdateTodoAsync(It.Is<TodoModel>(w => w == todoModel)))
+      .Returns(Task.CompletedTask)
+      .Verifiable(Times.Never());
+
+    var service = new TodoService(repositoryMock.Object, logger);
+    var result = await service.ChangeTodoIsCompleteAsync(todoModel.Id);
+
+    Assert.Null(result);
     repositoryMock.Verify();
   }
 }
