@@ -4,35 +4,35 @@ namespace ToDoList.Utilities;
 
 public static class Utils
 {
-  public static TodoListDto TodoList2Dto(TodoListModel todoListModel)
-  {
-    TodoListDto todoListDto = new()
+    public static TodoListDto TodoList2Dto(TodoListModel todoListModel)
     {
-      Id = todoListModel.Id,
-      Title = todoListModel.Title,
-      Description = todoListModel.Description,
-      Todos = todoListModel.Todos.Select(t => new TodoDto()
-      {
-        Id = t.Id,
-        Title = t.Title,
-        Description = t.Description,
-        DateCreated = t.DateCreated,
-        IsCompleted = t.IsCompleted,
-      })
-    };
-    return todoListDto;
-  }
+        TodoListDto todoListDto = new()
+        {
+            Id = todoListModel.Id,
+            Title = todoListModel.Title,
+            Description = todoListModel.Description,
+            Todos = todoListModel.Todos.Select(t => new TodoDto()
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                DateCreated = t.DateCreated,
+                IsCompleted = t.IsCompleted,
+            })
+        };
+        return todoListDto;
+    }
 
-  public static TodoDto Todo2Dto(TodoModel todoModel)
-  {
-    TodoDto todoDto = new()
+    public static TodoDto Todo2Dto(TodoModel todoModel)
     {
-      Id = todoModel.Id,
-      Title = todoModel.Title,
-      Description = todoModel.Description,
-      DateCreated = todoModel.DateCreated,
-      IsCompleted = todoModel.IsCompleted,
-    };
-    return todoDto;
-  }
+        TodoDto todoDto = new()
+        {
+            Id = todoModel.Id,
+            Title = todoModel.Title,
+            Description = todoModel.Description,
+            DateCreated = todoModel.DateCreated,
+            IsCompleted = todoModel.IsCompleted,
+        };
+        return todoDto;
+    }
 }

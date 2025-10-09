@@ -1,10 +1,12 @@
-using Serilog;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
-using ToDoList.Infrastructure;
-using ToDoList.Services.Interfaces;
-using ToDoList.Services;
+using Microsoft.EntityFrameworkCore;
+
+using Serilog;
+
 using ToDoList.Endpoints;
+using ToDoList.Infrastructure;
+using ToDoList.Services;
+using ToDoList.Services.Interfaces;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -12,57 +14,57 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
-  Log.Information("App started");
-  var builder = WebApplication.CreateBuilder(args);
+    Log.Information("App started");
+    var builder = WebApplication.CreateBuilder(args);
 
-  builder.Services.AddScoped<ITodoService, TodoService>();
-  builder.Services.AddScoped<ITodoRepository, TodoRepository>();
+    builder.Services.AddScoped<ITodoService, TodoService>();
+    builder.Services.AddScoped<ITodoRepository, TodoRepository>();
 
-  builder.Services.AddSerilog((services, ls) => ls
-      .ReadFrom.Configuration(builder.Configuration)
-      .ReadFrom.Services(services)
-      .Enrich.FromLogContext()
-      .WriteTo.Console());
+    builder.Services.AddSerilog((services, ls) => ls
+        .ReadFrom.Configuration(builder.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .WriteTo.Console());
 
-  SqlConnectionStringBuilder sqlConnectionStringBuilder = new(
-      builder.Configuration.GetConnectionString("TodoDbContext"))
-  {
-    Password = builder.Configuration["TodoContext:Password"]
-  };
+    SqlConnectionStringBuilder sqlConnectionStringBuilder = new(
+        builder.Configuration.GetConnectionString("TodoDbContext"))
+    {
+        Password = builder.Configuration["TodoContext:Password"]
+    };
 
-  builder.Services.AddDbContext<TodoDbContext>(options =>
-      options.UseSqlServer(sqlConnectionStringBuilder.ConnectionString));
+    builder.Services.AddDbContext<TodoDbContext>(options =>
+        options.UseSqlServer(sqlConnectionStringBuilder.ConnectionString));
 
-  builder.Services.AddOpenApi();
-  builder.Services.AddProblemDetails();
+    builder.Services.AddOpenApi();
+    builder.Services.AddProblemDetails();
 
-  var app = builder.Build();
+    var app = builder.Build();
 
-  // Configure the HTTP request pipeline.
-  if (app.Environment.IsDevelopment())
-  {
-    app.MapOpenApi();
-    app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "v1"));
-    app.UseDeveloperExceptionPage();
-  }
-  else
-  {
-    app.UseExceptionHandler();
-    app.UseStatusCodePages();
-  }
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+        app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "v1"));
+        app.UseDeveloperExceptionPage();
+    }
+    else
+    {
+        app.UseExceptionHandler();
+        app.UseStatusCodePages();
+    }
 
-  app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
 
-  app.MapGroup("").RouteTodoListEndpoint();
-  app.MapGroup("/todo").RouteTodoEndpoint();
+    app.MapGroup("").RouteTodoListEndpoint();
+    app.MapGroup("/todo").RouteTodoEndpoint();
 
-  app.Run();
+    app.Run();
 }
 catch (Exception ex)
 {
-  Log.Fatal(ex, "Terminated unexpectedly");
+    Log.Fatal(ex, "Terminated unexpectedly");
 }
 finally
 {
-  Log.CloseAndFlush();
+    Log.CloseAndFlush();
 }
