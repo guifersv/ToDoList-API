@@ -18,7 +18,7 @@ public static class Utils
                 Description = t.Description,
                 DateCreated = t.DateCreated,
                 IsCompleted = t.IsCompleted,
-            })
+            }).ToList()
         };
         return todoListDto;
     }

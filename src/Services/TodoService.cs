@@ -102,7 +102,7 @@ public class TodoService(ITodoRepository repository, ILogger<TodoService> logger
                 IsCompleted = todoDto.IsCompleted,
                 TodoListModelNavigation = todoList,
             };
-            ((List<TodoModel>)todoList.Todos).Add(todoModel);
+            todoList.Todos.Add(todoModel);
             await _repository.UpdateTodoListAsync(todoList);
             return todoDto;
         }
